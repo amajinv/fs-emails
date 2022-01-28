@@ -28,7 +28,13 @@ class FS():
     def classify_90_days(self):
         fecha_vencimiento = date.today() - timedelta(days=90)
         self.f3.loc[self.f3["fecha_reserva"] < pd.to_datetime(fecha_vencimiento), 'val_dias'] = 'Mayor a 90 días'
-        self.f3.loc[self.f3["fecha_reserva"] >= pd.to_datetime(fecha_vencimiento), 'val_dias'] = self.f3.loc[self.f3["fecha_reserva"] >= pd.to_datetime(fecha_vencimiento), 'mes'].values
+        self.f3.loc[self.f3["fecha_reserva"] >= pd.to_datetime(fecha_vencimiento), 'val_dias'] = self.f3.loc[self.f3["fecha_reserva"] >= pd.to_datetime(fecha_vencimiento), 'mes'].valuestabla_html = open("fig.html", "r").read()
+
+    def calculos(self):
+        x_90_dias = self.f3.groupby(['Mes', "val_dias"], sort=False)['cant*costoprmd'].sum().reset_index()
+        x_90_dias["color"] = x_90_dias["val_dias"]
+        x_90_dias.loc[x_90_dias["val_dias"] != "Mayor a 90 días" , "color" ] = "Menor a 90 días"
+        x_90_dias["cant*costoprmd"]=round((x_90_dias["cant*costoprmd"]/1e6),2)
 
 def call_fs():
     pass
